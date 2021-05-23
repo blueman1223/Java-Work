@@ -4,6 +4,7 @@ package io.github.kimmking.gateway.outbound.httpclient4;
 import io.github.kimmking.gateway.filter.HeaderHttpResponseFilter;
 import io.github.kimmking.gateway.filter.HttpRequestFilter;
 import io.github.kimmking.gateway.filter.HttpResponseFilter;
+import io.github.kimmking.gateway.outbound.OutBoundHandler;
 import io.github.kimmking.gateway.router.HttpEndpointRouter;
 import io.github.kimmking.gateway.router.RandomHttpEndpointRouter;
 import io.netty.buffer.Unpooled;
@@ -32,7 +33,7 @@ import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
-public class HttpOutboundHandler {
+public class HttpOutboundHandler implements OutBoundHandler {
     
     private CloseableHttpAsyncClient httpclient;
     private ExecutorService proxyService;
@@ -71,7 +72,8 @@ public class HttpOutboundHandler {
     private String formatUrl(String backend) {
         return backend.endsWith("/")?backend.substring(0,backend.length()-1):backend;
     }
-    
+
+    @Override
     public void handle(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx, HttpRequestFilter filter) {
         String backendUrl = router.route(this.backendUrls);
         final String url = backendUrl + fullRequest.uri();
