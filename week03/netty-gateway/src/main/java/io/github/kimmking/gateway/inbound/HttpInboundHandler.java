@@ -1,10 +1,13 @@
 package io.github.kimmking.gateway.inbound;
 
 import io.github.kimmking.gateway.filter.HeaderHttpRequestFilter;
+import io.github.kimmking.gateway.filter.HeaderHttpResponseFilter;
 import io.github.kimmking.gateway.filter.HttpRequestFilter;
 import io.github.kimmking.gateway.outbound.OutBoundHandler;
 import io.github.kimmking.gateway.outbound.httpclient4.HttpOutboundHandler;
+import io.github.kimmking.gateway.outbound.netty4.NettyHttpClientOutboundHandler;
 import io.github.kimmking.gateway.outbound.okhttp.OkhttpOutboundHandler;
+import io.github.kimmking.gateway.router.RandomHttpEndpointRouter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -24,7 +27,8 @@ public class HttpInboundHandler extends ChannelInboundHandlerAdapter {
     public HttpInboundHandler(List<String> proxyServer) {
         this.proxyServer = proxyServer;
        // this.handler = new HttpOutboundHandler(this.proxyServer);
-        this.handler = new OkhttpOutboundHandler(this.proxyServer);
+      //  this.handler = new OkhttpOutboundHandler(this.proxyServer);
+        this.handler = new NettyHttpClientOutboundHandler(new RandomHttpEndpointRouter(), proxyServer, new HeaderHttpResponseFilter());
     }
     
     @Override
