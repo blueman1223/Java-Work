@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
-public class StudentJdbcDao {
-    private final JdbcTemplate jdbcTemplate;
+public class StudentHikariDao implements StudentDao {
+    private final JdbcTemplate jdbcTemplate;    //默认使用hikari datasource
 
+    @Override
     public List<Student> selectList() {
-        String sql = "SELECT id, stu_no, stu_name FROM t_student";
-        List<Map<String, Object>> resMapList = jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> resMapList = jdbcTemplate.queryForList(SQL_SELECT_LIST);
         return resMapList.stream()
                 .map(stringObjectMap -> {
                     String id = String.valueOf(stringObjectMap.get("id"));
@@ -27,33 +27,37 @@ public class StudentJdbcDao {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public int insert(Student student) {
-        String sql = "INSERT INTO t_student(stu_no, stu_name)  VALUES ('"+student.getStuNo() + "', '" + student.getName() +"');";
+        String sql = String.format(SQL_INSERT, student.getStuNo(), student.getName());
         return jdbcTemplate.update(sql);
     }
 
+    @Override
     public int update(Student student) {
-        String sql = "UPDATE t_student SET stu_no='"+student.getStuNo()+"', stu_name='"+student.getName()+"' where id="+student.getId()+";";
+        String sql = String.format(SQL_UPDATE, student.getStuNo(), student.getName(), student.getId());
         return jdbcTemplate.update(sql);
     }
 
+    @Override
     public int delete(String id) {
-        String sql = "DELETE FROM t_student where id=" + id + ";";
+        String sql = String.format(SQL_DELETE, id);
         return jdbcTemplate.update(sql);
     }
 
+    @Override
     public int prepareInsert(Student student) {
-        String sql = "INSERT INTO t_student(stu_no, stu_name)  VALUES (?, ?);";
-        return jdbcTemplate.update(sql, student.getStuNo(), student.getName());
+
+        return jdbcTemplate.update(PREPARE_SQL_INSERT, student.getStuNo(), student.getName());
     }
 
+    @Override
     public int prepareUpdate(Student student) {
-        String sql = "UPDATE t_student SET stu_no=?, stu_name=? where id=?;";
-        return jdbcTemplate.update(sql, student.getStuNo(), student.getName(), student.getId());
+        return jdbcTemplate.update(PREPARE_SQL_UPDATE, student.getStuNo(), student.getName(), student.getId());
     }
 
+    @Override
     public int prepareDelete(String id) {
-        String sql = "DELETE FROM t_student where id=?;";
-        return jdbcTemplate.update(sql, id);
+        return jdbcTemplate.update(PREPARE_SQL_DELETE, id);
     }
 }
