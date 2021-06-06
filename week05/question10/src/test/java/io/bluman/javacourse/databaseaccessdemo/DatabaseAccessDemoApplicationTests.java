@@ -45,4 +45,22 @@ class DatabaseAccessDemoApplicationTests {
 		assert delRow == 1;
 	}
 
+	@Test
+	void studentJdbcDaoPrepareTest() {
+		Student stu1 = new Student();
+		stu1.setStuNo("001");
+		stu1.setName("student-1");
+		int insertRow = studentJdbcDao.prepareInsert(stu1);
+		assert insertRow == 1;
+		List<Student> studentList = studentJdbcDao.selectList();
+		assert studentList.size() == 1;
+		Student queryRes = studentList.get(0);
+		assert "001".equals(queryRes.getStuNo()) && "student-1".equals(queryRes.getName());
+		queryRes.setName("student-001");
+		int updateRow = studentJdbcDao.prepareUpdate(queryRes);
+		assert updateRow == 1;
+		int delRow = studentJdbcDao.prepareDelete(queryRes.getId());
+		assert delRow == 1;
+	}
+
 }

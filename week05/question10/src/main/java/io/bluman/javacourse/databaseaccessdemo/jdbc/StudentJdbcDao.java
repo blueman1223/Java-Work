@@ -41,4 +41,19 @@ public class StudentJdbcDao {
         String sql = "DELETE FROM t_student where id=" + id + ";";
         return jdbcTemplate.update(sql);
     }
+
+    public int prepareInsert(Student student) {
+        String sql = "INSERT INTO t_student(stu_no, stu_name)  VALUES (?, ?);";
+        return jdbcTemplate.update(sql, student.getStuNo(), student.getName());
+    }
+
+    public int prepareUpdate(Student student) {
+        String sql = "UPDATE t_student SET stu_no=?, stu_name=? where id=?;";
+        return jdbcTemplate.update(sql, student.getStuNo(), student.getName(), student.getId());
+    }
+
+    public int prepareDelete(String id) {
+        String sql = "DELETE FROM t_student where id=?;";
+        return jdbcTemplate.update(sql, id);
+    }
 }
