@@ -2,15 +2,16 @@ package io.bluman.javacourse.datasourceconfig.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
 @Configuration
-public class DatasourceConfig {
+@ConditionalOnMissingBean(name = "shardingSphereDataSource")
+public class DynamicDataSourceConfig {
 
-    @Bean("updateDatasource")
     public DataSource updateDataSource() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://localhost:3316/java_course");
@@ -23,7 +24,6 @@ public class DatasourceConfig {
         return new HikariDataSource(config);
     }
 
-    @Bean("selectDatasource")
     public DataSource selectDatasource() {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:mysql://localhost:3326/java_course");
@@ -32,5 +32,12 @@ public class DatasourceConfig {
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         return new HikariDataSource(config);
+    }
+
+    @Bean(name = "dataSource")
+    public DynamicDataSource dynamicDataSource() {
+        DataSource updateDS = updateDataSource();
+        DataSource selectDS = selectDatasource();
+        return new DynamicDataSource(selectDS, updateDS);
     }
 }

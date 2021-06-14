@@ -4,6 +4,8 @@ import io.bluman.javacourse.datasourceconfig.annotation.DataRead;
 import io.bluman.javacourse.datasourceconfig.annotation.DataWrite;
 import io.bluman.javacourse.datasourceconfig.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +16,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Repository
 public class UserDao {
-    private final JdbcTemplate jdbcTemplate;
+    @Autowired
+    @Qualifier("jdbcTemplate")
+    private JdbcTemplate jdbcTemplate;
 
 
     @DataWrite

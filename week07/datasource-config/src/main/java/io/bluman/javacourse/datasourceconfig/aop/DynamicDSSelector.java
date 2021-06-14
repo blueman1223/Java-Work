@@ -4,15 +4,18 @@ import io.bluman.javacourse.datasourceconfig.config.DynamicDataSource;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Aspect
 @Component
+@ConditionalOnClass(value = DynamicDataSource.class)
 @Order(0)   // 需要在@Transaction之前执行
 public class DynamicDSSelector {
-    @Autowired
+    @Resource(name = "dataSource")
     private DynamicDataSource dynamicDS;
 
     @Before("@annotation(io.bluman.javacourse.datasourceconfig.annotation.DataRead)")
