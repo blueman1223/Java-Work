@@ -1,0 +1,49 @@
+
+dataSources:
+  ds_0: !!com.zaxxer.hikari.HikariDataSource
+    jdbcUrl: jdbc:mysql://127.0.0.1:3316/ds_0?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    autoCommit: false
+  ds_1: !!com.zaxxer.hikari.HikariDataSource
+    jdbcUrl: jdbc:mysql://127.0.0.1:3326/ds_1?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    autoCommit: false
+
+rules:
+  - !SHARDING
+    tables:
+      t_order:
+        actualDataNodes: ds_${0..1}.t_order_${0..15}
+        tableStrategy:
+          standard:
+            shardingColumn: id
+            shardingAlgorithmName: t_order_inline
+        keyGenerateStrategy:
+          column: id
+          keyGeneratorName: snowflake
+    bindingTables:
+      - t_order
+    defaultDatabaseStrategy:
+      standard:
+        shardingColumn: create_by
+        shardingAlgorithmName: database_inline
+    defaultTableStrategy:
+      none:
+
+    shardingAlgorithms:
+      database_inline:
+        type: INLINE
+        props:
+          algorithm-expression: ds_${create_by % 2}
+      t_order_inline:
+        type: INLINE
+        props:
+          algorithm-expression: t_order_${id % 16}
+
+    keyGenerators:
+      snowflake:
+        type: SNOWFLAKE
+        props:
+          worker-id: 123
