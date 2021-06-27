@@ -24,3 +24,11 @@ create table `t_goods` (
 `create_time` bigint comment '创建（上架）时间',
 primary key (`id`)
 )engine=InnoDB  default charset=utf8mb4; 
+
+create table `t_goods_freeze` (
+`id` int not null auto_increment comment '自增主键' ,
+`goods_id` char(50) comment '商品ID',
+`amount_change` int comment '库存冻结',
+`user_id` char(50)  unique comment '用户Id',
+primary key (`id`)
+)engine=InnoDB  default charset=utf8mb4; 
