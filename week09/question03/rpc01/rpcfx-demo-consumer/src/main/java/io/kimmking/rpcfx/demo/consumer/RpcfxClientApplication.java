@@ -15,6 +15,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.List;
 import java.util.Random;
 
+@Slf4j
 @SpringBootApplication
 public class RpcfxClientApplication {
 
@@ -29,6 +30,7 @@ public class RpcfxClientApplication {
 		// service.findById
 
 		UserService userService = Rpcfx.create(UserService.class, "http://localhost:8080/");
+		log.debug("actual class:{}", userService.getClass().getName());
 		User user = userService.findById(1);
 		System.out.println("find user id=1 from server: " + user.getName());
 
