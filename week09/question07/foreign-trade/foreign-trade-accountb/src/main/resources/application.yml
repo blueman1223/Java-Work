@@ -1,0 +1,27 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /
+  address: 0.0.0.0
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3326/account_b?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 123456
+
+mybatis:
+  type-aliases-package: io.blueman.foreign.trade.common.account.entity
+  config-location: classpath:mybatis/mybatis-config.xml
+
+logging:
+  level:
+    root: error
+    org.springframework.web: info
+    org.apache.ibatis: debug
+    org.dromara.hmily.tac: debug
+    org.dromara.hmily.demo.bonuspoint: debug
+    org.dromara.hmily.demo.lottery: debug
+    org.dromara.hmily.demo: debug
+    io.blueman: debug
+  path: "./logs"
+
