@@ -1,0 +1,7 @@
+spring:
+  redis:
+    host: localhost
+    lettcute:
+      pool:
+        max-active: 8
+        max-wait: 10ms
